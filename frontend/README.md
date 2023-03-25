@@ -1,4 +1,3 @@
-This is a starter template for [Learn Next.js](https://nextjs.org/learn).
+# Frontend
 
-Start the server witih
-npm run dev
+Frontend for the data api

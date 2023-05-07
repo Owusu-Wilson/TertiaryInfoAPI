@@ -1,22 +1,104 @@
+import { useState } from "react";
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
-
+import Button from "@mui/material/Button";
 import SearchBar from "../components/SearchBar";
+import { Card, FormControlLabel, Grid, Input, Radio, RadioGroup, Select } from "@mui/material";
+import { Camera, Image } from "@mui/icons-material";
 export default function Home() {
+  const [queryText, setQueryText] = useState('');
+  const [selectedFilter, setSelectedFilter] = useState('')
+
+
+  const test_api = async () => {
+    const options = {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json'
+      }
+
+    }
+
+    const url = "https://jsonplaceholder.typicode.com/users"
+    const url2 = "http://localhost:8080/universities"
+    const url3 = `http://localhost:8080/${queryText}`
+
+
+
+    //  "http://localhost:8080/universities"
+    const response = await fetch(url3, options)
+    const unis = await response.json()
+    console.log(unis)
+  }
+
+  function getData() {
+    console.log(`query: ${queryText}`)
+    console.log(`filter: ${selectedFilter}`)
+
+
+  }
   return (
     <div className={styles.container}>
       <Head>
-        <title>Create Next App</title>
+        <title>GH Tertiary Hub</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <main>
+        <Grid columns={4} rowSpacing={20}>
+          <Card />
+        </Grid>
         <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Tertiary Info Hub</a>
+          Welcome to <span>Tertiary Info Hub</span>
         </h1>
-        <div>
-          <SearchBar />
-        </div>
+
+        <SearchBar
+          value={queryText}
+          onChange={(text) => {
+            setQueryText(text.target.value
+            )
+          }}
+        />
+        {/* Query filters section */}
+        {/* Available routes are 
+        /universities
+        /universities/name/
+        /universities/{acronym}
+        /universities/query/ = takes either a region or  acronym
+         */}
+        <h3>Set Filters</h3>
+        <RadioGroup
+          aria-labelledby="demo-radio-buttons-group-label"
+
+          defaultValue="name"
+          value={selectedFilter}
+          name="radio-buttons-group"
+          row
+          onChange={(filterVal) => {
+            if (filterVal) {
+              setSelectedFilter(filterVal.target.value
+              )
+
+            }
+            else {
+              setSelectedFilter('name'
+              )
+
+            }
+          }}
+
+        // className={styles.filters}
+        >
+          <FormControlLabel value="name" control={<Radio />} label="Name" />
+          <FormControlLabel value="acronym" control={<Radio />} label="Acronym" />
+          <FormControlLabel value="region" control={<Radio />} label="Region" />
+        </RadioGroup>
+
+        <Button sx={styles.button} onClick={getData} variant="contained">
+          Search
+        </Button>
+        <Button sx={styles.button} onClick={test_api} variant="contained">
+          Test api
+        </Button>
       </main>
 
       <footer>
@@ -25,7 +107,7 @@ export default function Home() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Powered by{" "}
+          Powered by{" SLabs GH Creatives "}
           <img
             src="/vercel.svg"
             alt="SlabsGH Creatives"

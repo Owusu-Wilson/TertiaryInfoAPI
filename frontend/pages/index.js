@@ -31,9 +31,51 @@ export default function Home() {
     console.log(unis)
   }
 
-  function getData() {
+  const getData = async () => {
+    // Log data
     console.log(`query: ${queryText}`)
     console.log(`filter: ${selectedFilter}`)
+
+    // fetch options
+    const options = {
+      method: 'GET',
+      headers: {
+        'content-type': 'application/json'
+      }
+
+    }
+
+    //  fetch url - formatting the url with the selected filter
+    //  the request is set based on the filter selected
+    if (selectedFilter == 'acronym') {
+      const url = `http://localhost:8080/universities/${queryText}`
+      console.log(url)
+
+      //  fetch request being made
+      const response = await fetch(url, options)
+      const unis = await response.json()
+      console.log(unis)
+
+    }
+    else if (selectedFilter == 'name') {
+      const url = `http://localhost:8080/universities/${selectedFilter}=${queryText}`
+      console.log(url)
+
+      //  fetch request being made
+      const response = await fetch(url, options)
+      const unis = await response.json()
+      console.log(unis)
+    } else {
+       const url = `http://localhost:8080/universities/query/?${selectedFilter}=${queryText}`
+      console.log(url)
+
+      //  fetch request being made
+      const response = await fetch(url, options)
+      const unis = await response.json()
+      console.log(unis)
+    }
+
+
 
 
   }

@@ -45,6 +45,8 @@ async def get_all_universities():
     return data
 
 
+# http://127.0.0.1:8000/universities/name/?name=
+
 @app.get("/universities/name/")
 async def name_query(name: str):
     temp_results = []
@@ -53,7 +55,7 @@ async def name_query(name: str):
             temp_results.append(entry)
     return temp_results
 
-
+# http://127.0.0.1:8000/universities/{acronym}
 @app.get("/universities/{acronym}")
 async def acronym_query(acronym):
     """query the db given an acronym """
@@ -61,13 +63,23 @@ async def acronym_query(acronym):
         if (entry['acronym'] == acronym) or (str(entry['acronym']).lower() == acronym):
             return entry
 
+# http://127.0.0.1:8000/universities/{region}
 
+
+@app.get("/universities/{region}")
+async def acronym_query(region):
+    """query the db given an acronym """
+    for entry in data:
+        if (entry['region'] == region) or (str(entry['region']).lower() == region):
+            return entry
+
+# http://127.0.0.1:8000/universities/query/?region=''&acronym=''
 @app.get("/universities/query/")
 async def region_query(region=None, acronym=None):
     temp_list = []
     for entry in data:
 
-        if (entry['region'] == region) and (entry['acronym'] == acronym or str(entry["acronym"]).lower() == acronym):
+        if (entry['region'] == region) or (entry['acronym'] == acronym or str(entry["acronym"]).lower() == acronym):
             temp_list.append(entry)
     return temp_list
 

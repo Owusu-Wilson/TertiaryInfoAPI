@@ -57,22 +57,40 @@ Clone the project
   git clone https://link-to-project
 ```
 
-Go to the project directory
+Go to the frontend directory
 
 ```bash
-  cd my-project
+  cd frontend
 ```
 
-Install dependencies
+Install dependencies for the frontend - a NextJS app
 
 ```bash
-  npm install
+  npm install or yarn install
 ```
 
 Start the server
 
 ```bash
   npm run start
+```
+<hr>
+Go to the backend directory
+
+```bash
+  cd backend
+```
+
+Install dependencies for the backend - a FastAPI app
+
+```bash
+  pip install -r requrements.txt
+```
+
+Start the server
+
+```bash
+  python main.py
 ```
 
 
@@ -87,10 +105,10 @@ Start the server
 
 ## Authors
 
-- [@Owusu Wilson](https://www.github.com/owusu-ilson)
+- [@Owusu Wilson](https://www.github.com/Owusu-Wilson)
 
 
-# Hi, I'm Katherine! 👋
+# Hi, I'm Wilson! 👋
 
 
 ## 🔗 Links
@@ -100,7 +118,7 @@ Start the server
 
 
 ## 🛠 Skills
-Javascript, HTML, CSS...
+Javascript, HTML, CSS, Python
 
 
 ## License

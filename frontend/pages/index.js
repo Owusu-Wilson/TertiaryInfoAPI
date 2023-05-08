@@ -1,84 +1,80 @@
 import { useState } from "react";
 import Head from "next/head";
+import Link from "next/link";
 import styles from "../styles/Home.module.css";
 import Button from "@mui/material/Button";
 import SearchBar from "../components/SearchBar";
-import { Card, FormControlLabel, Grid, Input, Radio, RadioGroup, Select } from "@mui/material";
-import { Camera, Image } from "@mui/icons-material";
+import {
+  Card,
+  Box,
+  FormControlLabel,
+  Grid,
+  Input,
+  List,
+  ListItem,
+  ListItemText,
+  Radio,
+  RadioGroup,
+  Select,
+} from "@mui/material";
+import { Camera, Image, ViewList } from "@mui/icons-material";
+
+import { Close, Comment } from "@mui/icons-material";
+import { IconButton } from "@mui/material";
+import { fontStyle } from "@mui/system";
+
 export default function Home() {
-  const [queryText, setQueryText] = useState('');
-  const [selectedFilter, setSelectedFilter] = useState('')
+  const [queryText, setQueryText] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("");
+  const [results, setResults] = useState([]); // list of results
 
-
-  const test_api = async () => {
-    const options = {
-      method: 'GET',
-      headers: {
-        'content-type': 'application/json'
-      }
-
-    }
-
-    const url = "https://jsonplaceholder.typicode.com/users"
-    const url2 = "http://localhost:8080/universities"
-    const url3 = `http://localhost:8080/${queryText}`
-
-
-
-    //  "http://localhost:8080/universities"
-    const response = await fetch(url3, options)
-    const unis = await response.json()
-    console.log(unis)
-  }
-
-  const getData = async () => {
-    // Log data
-    console.log(`query: ${queryText}`)
-    console.log(`filter: ${selectedFilter}`)
-
+  const fetch_route = async (url) => {
     // fetch options
     const options = {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'content-type': 'application/json'
-      }
+        "content-type": "application/json",
+      },
+    };
+    console.log(url);
 
-    }
+    //  fetch request being made
+    const response = await fetch(url, options);
+    const unis = await response.json();
+
+    // destructuring the results and storing into a list
+    let results_list = [];
+
+    unis.forEach((item, key) => {
+      results_list.push(item);
+    });
+    // console.log(results_list)
+    setResults(results_list);
+    console.log(results);
+  };
+  const getData = async () => {
+    // Log data
+    console.log(`query: ${queryText}`);
+    console.log(`filter: ${selectedFilter}`);
 
     //  fetch url - formatting the url with the selected filter
     //  the request is set based on the filter selected
-    if (selectedFilter == 'acronym') {
-      const url = `http://localhost:8080/universities/${queryText}`
-      console.log(url)
 
-      //  fetch request being made
-      const response = await fetch(url, options)
-      const unis = await response.json()
-      console.log(unis)
-
-    }
-    else if (selectedFilter == 'name') {
-      const url = `http://localhost:8080/universities/${selectedFilter}=${queryText}`
-      console.log(url)
-
-      //  fetch request being made
-      const response = await fetch(url, options)
-      const unis = await response.json()
-      console.log(unis)
+    if (queryText.length < 1) {
+      //catching errors associated with empty query from text box
+      console.log("Empty query string");
     } else {
-       const url = `http://localhost:8080/universities/query/?${selectedFilter}=${queryText}`
-      console.log(url)
-
-      //  fetch request being made
-      const response = await fetch(url, options)
-      const unis = await response.json()
-      console.log(unis)
+      if (selectedFilter) {
+        // fetch url with query selectors
+        const url = `http://localhost:8080/search/${selectedFilter}/?${selectedFilter}=${queryText}`;
+        fetch_route(url);
+      } else {
+        // if no filter is selected, name is used as defualt
+        const default_url = `http://localhost:8080/search/name/?name=${queryText}`;
+        fetch_route((url = default_url));
+      }
     }
-
-
-
-
-  }
+  };
   return (
     <div className={styles.container}>
       <Head>
@@ -92,14 +88,21 @@ export default function Home() {
         <h1 className={styles.title}>
           Welcome to <span>Tertiary Info Hub</span>
         </h1>
-
-        <SearchBar
-          value={queryText}
-          onChange={(text) => {
-            setQueryText(text.target.value
-            )
-          }}
-        />
+        <div>
+          <SearchBar
+            value={queryText}
+            onChange={(text) => {
+              setQueryText(text.target.value);
+            }}
+          />
+          <IconButton
+            onClick={() => {
+              setQueryText("");
+            }}
+          >
+            <Close />
+          </IconButton>
+        </div>
         {/* Query filters section */}
         {/* Available routes are 
         /universities
@@ -110,37 +113,76 @@ export default function Home() {
         <h3>Set Filters</h3>
         <RadioGroup
           aria-labelledby="demo-radio-buttons-group-label"
-
           defaultValue="name"
           value={selectedFilter}
           name="radio-buttons-group"
           row
           onChange={(filterVal) => {
             if (filterVal) {
-              setSelectedFilter(filterVal.target.value
-              )
-
-            }
-            else {
-              setSelectedFilter('name'
-              )
-
+              setSelectedFilter(filterVal.target.value);
             }
           }}
 
-        // className={styles.filters}
+          // className={styles.filters}
         >
           <FormControlLabel value="name" control={<Radio />} label="Name" />
-          <FormControlLabel value="acronym" control={<Radio />} label="Acronym" />
+          <FormControlLabel
+            value="acronym"
+            control={<Radio />}
+            label="Acronym"
+          />
           <FormControlLabel value="region" control={<Radio />} label="Region" />
         </RadioGroup>
+        <div
+          style={{
+            flexDirection: "row",
+            padding: 5,
+          }}
+        >
+          <Button sx={styles.button} onClick={getData} variant="contained">
+            Search
+          </Button>
+          {/* This button appears when results are returned to the screen */}
+          {results.length != 0 ? (
+            <Button
+              sx={styles.button}
+              onClick={() => {
+                setResults([]);
+              }}
+              variant="contained"
+            >
+              Clear
+            </Button>
+          ) : null}
+        </div>
+        {/* <p className="results">{typeof(results)}</p> */}
 
-        <Button sx={styles.button} onClick={getData} variant="contained">
-          Search
-        </Button>
-        <Button sx={styles.button} onClick={test_api} variant="contained">
-          Test api
-        </Button>
+        {results.length != 0 ? <h3>{results.length} results found</h3> : null}
+        <List
+          sx={{ width: "100%", maxWidth: 700, bgcolor: "background.paper" }}
+        >
+          {results.map((value) => (
+            <Link key={value.name} href="/details">
+              <Button autoCapitalize="false">
+                <Card
+                  sx={{
+                    marginBottom: 1,
+                    padding: 0.5,
+                    justifySelf: "center",
+                    fontWeight: "bold",
+                  }}
+                >
+                  <ListItem disableGutters>
+                    <ListItemText
+                      sx={{ fontWeight: "bold" }}
+                      primary={`${value.acronym} ◾ ${value.name}`}
+                    />
+                  </ListItem>
+                </Card>
+              </Button>
+            </Link>
+          ))}
+        </List>
       </main>
 
       <footer>

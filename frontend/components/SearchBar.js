@@ -5,6 +5,7 @@ import { Close, PersonSearch, Search } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 
 export const SearchBar = ({ onChange, value }) => {
+
   return (
     <div className={styles.container}>
       <Search fontSize="medium" />
@@ -15,9 +16,9 @@ export const SearchBar = ({ onChange, value }) => {
           onChange={onChange}
           placeholder="Search by the title ..."
         />
-        <IconButton>
+        {/* <IconButton >
           <Close />
-        </IconButton>
+        </IconButton> */}
       </div>
     </div>
   );

@@ -162,7 +162,14 @@ export default function Home() {
           sx={{ width: "100%", maxWidth: 700, bgcolor: "background.paper" }}
         >
           {results.map((value) => (
-            <Link key={value.name} href="/details">
+            <Link
+              key={value.name}
+              href={{
+                pathname: "/details",
+                query: value,
+              }}
+              property={value}
+            >
               <Button autoCapitalize="false">
                 <Card
                   sx={{
